@@ -1,0 +1,196 @@
+'Written by Matt Levy - 6/13/2018
+Sub BOM_Compare()
+Application.ScreenUpdating = False
+' Count how many line items exist
+Dim linesOld As Long
+linesOld = WorksheetFunction.CountA(Sheets("oldBOM").Columns("A:A"))
+Dim linesNew As Long
+linesNew = WorksheetFunction.CountA(Sheets("newBOM").Columns("A:A"))
+
+Dim i As Integer
+Dim j As Integer
+Dim newItem As Integer
+newItem = 1 'new item counter
+
+'For each old BOM line item...
+Worksheets("oldBOM").Activate
+'Clear formatting of sheet
+    Cells.Select
+    With Selection.Font
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+    End With
+    With Selection.Font
+        .Name = "Calibri"
+        .Size = 11
+        .Strikethrough = False
+        .Superscript = False
+        .Subscript = False
+        .OutlineFont = False
+        .Shadow = False
+        .Underline = xlUnderlineStyleNone
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+        .ThemeFont = xlThemeFontMinor
+    End With
+    With Selection.Interior
+        .Pattern = xlNone
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+
+'Copy oldBOM to genBOM
+Worksheets("oldBOM").Activate
+    Cells.Select
+    Selection.Copy
+Sheets("genBOM").Select
+    Range("A1").Select
+    ActiveSheet.Paste
+
+Worksheets("oldBOM").Activate
+
+For i = 2 To linesOld
+    For j = 2 To linesNew
+        'Check if DESCRIPTION exists in newBOM
+        If Sheets("oldBOM").Cells(i, 3) = Sheets("newBOM").Cells(j, 3) Then
+            'Check if SIZE is same, if so than this is the same part, need to just check if length/quantity changed
+            If Sheets("oldBOM").Cells(i, 2) = Sheets("newBOM").Cells(j, 2) Then
+                'Check if LENGTH differs
+                If Sheets("oldBOM").Cells(i, 4) <> Sheets("newBOM").Cells(j, 4) Then
+                    Sheets("oldBOM").Cells(i, 4).Font.Color = vbRed
+                    'Sheets("oldBOM").Cells(i, 6).Value = "x"
+                    Worksheets("genBOM").Activate
+                        Sheets("genBOM").Cells(i, 4).Value = Sheets("newBOM").Cells(j, 4).Value
+                        Sheets("genBOM").Cells(i, 4).Font.Color = vbRed
+                    Worksheets("oldBOM").Activate
+                End If
+                
+                'Check if QTY differs
+                If Val(Sheets("oldBOM").Cells(i, 5)) <> Val(Sheets("newBOM").Cells(j, 5)) Then
+                    Sheets("oldBOM").Cells(i, 5).Font.Color = vbRed
+                    'Sheets("oldBOM").Cells(i, 6).Value = "x"
+                    Worksheets("genBOM").Activate
+                        Sheets("genBOM").Cells(i, 5).Value = Val(Sheets("newBOM").Cells(j, 5).Value)
+                        Sheets("genBOM").Cells(i, 5).Font.Color = vbRed
+                    Worksheets("oldBOM").Activate
+
+                End If
+                
+                'Since this is the same part, we can skip to next I "newBOM item"
+                GoTo NextOldI
+            End If
+            
+        'If DESCRIPTION does not exist at end of linesNew... this part was removed in the newBOM, highlight/strikethrough all red
+        ElseIf j = linesNew Then
+            Sheets("oldBOM").Range(Cells(i, 1), Cells(i, 5)).Font.Color = vbRed
+            Sheets("oldBOM").Range(Cells(i, 1), Cells(i, 5)).Font.Strikethrough = True
+            'Sheets("oldBOM").Cells(i, 6).Value = "x"
+            Worksheets("genBOM").Activate
+            Sheets("genBOM").Range(Cells(i, 1), Cells(i, 6)).Font.Color = vbRed
+            Sheets("genBOM").Range(Cells(i, 1), Cells(i, 6)).Font.Strikethrough = True
+            Sheets("genBOM").Cells(i, 5).Value = 0
+            Worksheets("oldBOM").Activate
+            GoTo NextOldI
+        End If
+        
+    'Otherwise, go to next line in oldBOM
+    Next j
+NextOldI: Next i
+
+
+'For each new BOM line item...
+Worksheets("newBOM").Activate
+
+'Clear formatting of sheet
+    Cells.Select
+    With Selection.Font
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+    End With
+    With Selection.Font
+        .Name = "Calibri"
+        .Size = 11
+        .Strikethrough = False
+        .Superscript = False
+        .Subscript = False
+        .OutlineFont = False
+        .Shadow = False
+        .Underline = xlUnderlineStyleNone
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+        .ThemeFont = xlThemeFontMinor
+    End With
+    With Selection.Interior
+        .Pattern = xlNone
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    Columns("F:F").Select
+    Selection.ClearContents
+    
+
+For i = 2 To linesNew
+    For j = 2 To linesOld
+    ' - Check if DESCRIPTION exists in oldBOM
+        If Sheets("newBOM").Cells(i, 3) = Sheets("oldBOM").Cells(j, 3) Then
+            'Check if SIZE is same, if so than this is the same part, need to just check if length/quantity changed
+            If Sheets("newBOM").Cells(i, 2) = Sheets("oldBOM").Cells(j, 2) Then
+                'Check if LENGTH differs
+                If Sheets("newBOM").Cells(i, 4) <> Sheets("oldBOM").Cells(j, 4) Then
+                Sheets("newBOM").Cells(i, 4).Font.Color = vbRed
+                'Sheets("newBOM").Cells(i, 6).Value = "x"
+                End If
+                
+                'Check if QTY differs
+                If Val(Sheets("newBOM").Cells(i, 5)) <> Val(Sheets("oldBOM").Cells(j, 5)) Then
+                Sheets("newBOM").Cells(i, 5).Font.Color = vbRed
+                'Sheets("newBOM").Cells(i, 6).Value = "x"
+                End If
+                
+                'Since this is the same part, we can skip to next I "newBOM item"
+                GoTo NextNewI
+            End If
+            
+        'If DESCRIPTION does not exist at end of linesOld... this is new part, highlight all red
+        ElseIf j = linesOld Then
+            Sheets("newBOM").Range(Cells(i, 1), Cells(i, 5)).Font.Color = vbRed
+            'Sheets("newBOM").Cells(i, 6).Value = "x"
+            'Add this item to end of genBOM
+            Worksheets("genBOM").Activate
+            Sheets("genBOM").Cells(linesOld + newItem, 1).Value = (linesOld + newItem - 1)
+            Sheets("genBOM").Cells(linesOld + newItem, 2).Value = Sheets("newBOM").Cells(i, 2).Value
+            Sheets("genBOM").Cells(linesOld + newItem, 3).Value = Sheets("newBOM").Cells(i, 3).Value
+            Sheets("genBOM").Cells(linesOld + newItem, 4).Value = Sheets("newBOM").Cells(i, 4).Value
+            Sheets("genBOM").Cells(linesOld + newItem, 5).Value = Val(Sheets("newBOM").Cells(i, 5).Value)
+            If Left(Sheets("genBOM").Cells(linesOld + newItem, 3).Value, 4) = "PIPE" Then
+                Sheets("genBOM").Cells(linesOld + newItem, 6).Value = "LF"
+            Else
+                Sheets("genBOM").Cells(linesOld + newItem, 6).Value = "EA"
+            End If
+            Sheets("genBOM").Range(Cells(linesOld + newItem, 1), Cells(linesOld + newItem, 6)).Font.Color = vbRed
+            Worksheets("newBOM").Activate
+            newItem = newItem + 1
+            
+            GoTo NextNewI
+        End If
+    'Otherwise, go to next line in newBOM
+    Next j
+NextNewI: Next i
+
+
+
+
+'Filter to the changes
+'Sheets("newBOM").Range("A:F").AutoFilter Field:=6, Criteria1:="<>"
+'Sheets("oldBOM").Range("A:F").AutoFilter Field:=3, Criteria1:=RGB(255, 0, 0), Operator:=xlFilterFontColor
+Worksheets("genBOM").Activate
+
+Columns("E:E").Select
+With Selection
+    .HorizontalAlignment = xlLeft
+End With
+
+
+
+Application.ScreenUpdating = True
+End Sub
