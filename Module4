@@ -1,0 +1,36 @@
+Sub leftAlign()
+'
+' leftAlign Macro
+'
+
+'
+    Columns("E:E").Select
+    With Selection
+        .HorizontalAlignment = xlLeft
+    End With
+    
+    .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    
+    ActiveWindow.SmallScroll Down:=-168
+    Range("E2").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Range(Selection, Selection.End(xlDown)).Select
+    With Selection
+        .HorizontalAlignment = xlGeneral
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Range("E9").Select
+    ActiveWindow.SmallScroll Down:=-24
+End Sub
