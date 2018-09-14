@@ -1,0 +1,128 @@
+Sub ClearFormatting2()
+'
+' ClearFormatting2 Macro
+'
+'Clear formatting of sheet newBOM
+Application.ScreenUpdating = False
+Worksheets("newBOM").Activate
+    If ActiveSheet.AutoFilterMode = True Then ActiveSheet.AutoFilterMode = False
+    Cells.Select
+    With Selection.Font
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+    End With
+    With Selection.Font
+        .Name = "Calibri"
+        .Size = 11
+        .Strikethrough = False
+        .Superscript = False
+        .Subscript = False
+        .OutlineFont = False
+        .Shadow = False
+        .Underline = xlUnderlineStyleNone
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+        .ThemeFont = xlThemeFontMinor
+    End With
+    With Selection.Interior
+        .Pattern = xlNone
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    
+'Clear formatting of sheet oldBOM
+Worksheets("oldBOM").Activate
+    If ActiveSheet.AutoFilterMode = True Then ActiveSheet.AutoFilterMode = False
+    Cells.Select
+    With Selection.Font
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+    End With
+    With Selection.Font
+        .Name = "Calibri"
+        .Size = 11
+        .Strikethrough = False
+        .Superscript = False
+        .Subscript = False
+        .OutlineFont = False
+        .Shadow = False
+        .Underline = xlUnderlineStyleNone
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+        .ThemeFont = xlThemeFontMinor
+    End With
+    With Selection.Interior
+        .Pattern = xlNone
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    
+'Clear formatting of sheet genBOM
+Worksheets("genBOM").Activate
+    If ActiveSheet.AutoFilterMode = True Then ActiveSheet.AutoFilterMode = False
+    Cells.Select
+    With Selection.Font
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+    End With
+    With Selection.Font
+        .Name = "Calibri"
+        .Size = 11
+        .Strikethrough = False
+        .Superscript = False
+        .Subscript = False
+        .OutlineFont = False
+        .Shadow = False
+        .Underline = xlUnderlineStyleNone
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+        .ThemeFont = xlThemeFontMinor
+    End With
+    With Selection.Interior
+        .Pattern = xlNone
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    
+    
+    Worksheets("README").Activate
+    Application.ScreenUpdating = True
+End Sub
+Sub clearSheetOldBOM()
+'
+' clearSheetContents Macro
+'
+
+'
+    Worksheets("oldBOM").Activate
+    If ActiveSheet.AutoFilterMode = True Then ActiveSheet.AutoFilterMode = False
+    Cells.Select
+    Selection.ClearContents
+    Worksheets("README").Activate
+End Sub
+
+Sub clearSheetNewBOM()
+'
+' clearSheetContents Macro
+'
+
+'
+    Worksheets("newBOM").Activate
+    If ActiveSheet.AutoFilterMode = True Then ActiveSheet.AutoFilterMode = False
+    Cells.Select
+    Selection.ClearContents
+    Worksheets("README").Activate
+End Sub
+
+Sub clearSheetGenBOM()
+'
+' clearSheetContents Macro
+'
+
+'
+    Worksheets("genBOM").Activate
+    If ActiveSheet.AutoFilterMode = True Then ActiveSheet.AutoFilterMode = False
+    Cells.Select
+    Selection.ClearContents
+    Worksheets("README").Activate
+End Sub
